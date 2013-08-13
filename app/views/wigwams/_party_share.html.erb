@@ -1,0 +1,41 @@
+<%#
+<!--
+
+/*
+ *
+ * Copyright 2013 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+-->
+%>
+
+<% content_for :head do %>
+  <script>
+    <%= render :partial => "wigwams/party_share_script", :formats => [:js] %>
+  </script>
+<% end %>
+
+<%= form_tag(party_wigwam_path,
+  :class => "form-horizontal",
+  :id => "party-form",
+  :method => "post",
+  :remote => "true") do %>
+
+  <%= submit_tag 'Throw a party here!',
+    :disable_with => "Creating...",
+    :class => "btn btn-primary" %>
+
+<% end %>
+

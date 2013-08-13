@@ -1,0 +1,126 @@
+<%#
+<!--
+
+/*
+ *
+ * Copyright 2013 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+-->
+%>
+
+<!DOCTYPE html>
+<html>
+<!-- Head prefixed for Facebook Open Graph -->
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# <%= ENV['FB_NS'] %>: http://ogp.me/ns/fb/<%= ENV['FB_NS'] %>#">
+
+  <title>Wigwam Now!</title>
+
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+
+  <%= csrf_meta_tags %>
+
+  <!-- TODO(samstern): Remove and load truly async -->
+  <script id="facebook-jssdk" src="//connect.facebook.net/en_US/all.js"></script>
+
+  <!-- Facebook Meta Tags (Open Graph) -->
+  <meta property="fb:app_id" content=<%= ENV['FB_APP_ID'] %> />
+
+  <!-- Comes from Rails content_for block -->
+  <%= yield :fb_meta_tags %>
+
+  <!-- Page Specific JavaScript -->
+  <%= yield :head %>
+
+</head>
+<body>
+  <!-- This element required for Facebook JS SDK -->
+  <div id="fb-root"></div>
+
+  <!-- BEGIN NAVBAR -->
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <!-- Button for navbar expand on mobile layout -->
+        <button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand" href="/">Wigwam Now</a>
+        <div class="nav-collapse collapse" style="height: 0px;">
+          <!-- Username and login/logout widget -->
+          <% if signed_in? %>
+            <p class="navbar-text pull-right"
+              id=<%= "#{current_conn.provider}-user-info" %> >
+              <span class="navbar-link">
+                <%= current_user.name %>
+              </span>
+              <a href="#" id="logout-link">(Logout)</a>
+            </p>
+          <% else %>
+            <p class="navbar-text pull-right" id="user-info"
+            style="display: none;">
+              <span class="navbar-link" id="user-name">
+              </span>
+              <a href="#" id="logout-link">(Logout)</a>
+            </p>
+            <button class="btn btn-primary pull-right" id="fb-login-button" style="display: none;">Login with Facebook</button>
+          <% end %>
+
+              <!-- Render the Google+ Sign In Button -->
+              <%= render partial: 'plusbutton' %>
+
+          <!-- Main navbar menu -->
+          <ul class="nav">
+            <li class="active">
+              <a href="/">Home</a>
+            </li>
+            <li>
+               <a href="#">About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div><!-- END NAVBAR -->
+
+  <!-- BEGIN BODY -->
+  <div class="container-fluid">
+
+    <!-- Flash Messages -->
+    <%= render partial: 'flash', locals: { flash: flash } %>
+
+    <!-- Page Body -->
+    <%= yield %>
+
+    <!-- BEGIN FOOTER -->
+    <hr>
+    <footer>
+      <p>© WigwamNow 2013 |
+        <strong>Join us on: </strong>
+        <a href="//plus.google.com/111905610020639781937?prsrc=3" rel="publisher" target="_top" style="text-decoration:none;">
+          <img src="//ssl.gstatic.com/images/icons/gplus-32.png" alt="Google+" style="border:0;width:32px;height:32px;"/>
+        </a>
+      <p>
+    </footer><!-- END FOOTER -->
+
+  </div><!-- END BODY -->
+
+  <!-- Load the Google+ and Facebook JavaScript -->
+  <%= render partial: 'footer_script' %>
+</body>
+</html>
