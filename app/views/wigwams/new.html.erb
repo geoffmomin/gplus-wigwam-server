@@ -1,0 +1,76 @@
+<%#
+<!--
+
+/*
+ *
+ * Copyright 2013 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+-->
+%>
+
+<div class="row-fluid">
+  <div class="span12">
+
+    <div class="page-header">
+      <h1>
+        List a Wigwam
+        <small>Start renting today!</small>
+      </h1>
+    </div>
+  </div>
+
+  <%= form_for @wigwam do |f| %>
+    <table>
+      <tr>
+        <td valign="top" style="padding: 5px;">
+          <%= f.label :name, "Name:" %>
+          <%= f.text_field :name %>
+
+          <%= f.label :description, "Description:" %>
+          <%= f.text_field :description %>
+
+          <%= f.label :src, "Image URL:" %>
+          <%= f.text_field :src %>
+
+          <%= f.label :price, "Price (USD per night):" %>
+          <%= f.number_field :price %>
+        </td>
+        <td valign="top" style="padding: 5px;">
+          <%= f.label :street, "Street Address:" %>
+          <%= f.text_field :street %>
+
+          <%= f.label :city, "City:" %>
+          <%= f.text_field :city %>
+
+          <%= f.label :state, "State:" %>
+          <%= f.text_field :state %>
+
+          <%= f.label :zip, "Zip Code:" %>
+          <%= f.text_field :zip %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= f.submit "Submit", :class => "btn btn-primary" %>
+        </td>
+      </tr>
+      <!-- Hidden Listing date info -->
+      <%= hidden_field_tag(:listing_start, params["from-date"]) %>
+      <%= hidden_field_tag(:listing_end, params["to-date"]) %>
+    </table>
+  <% end %>
+
+</div>

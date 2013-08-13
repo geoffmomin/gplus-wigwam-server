@@ -1,0 +1,148 @@
+/*
+ * Copyright 2013 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * This file contains the implementation of the authentication logic for
+ * Facebook and the DOM manipulations associated to changes in the Facebook
+ * session state.
+ *
+ * author: samstern@google.com (Sam Stern)
+ */
+
+var FB_API = {
+
+  /**
+   * Record the result of an authorization attempt by storing the result
+   * and firing an event.
+   *
+   * @param {Object} authResult the authorization result receieved.
+   */
+  recordAuthResult: function(authResult) {
+    $(document).trigger('auth-event', ['facebook', authResult]);
+  },
+
+  /**
+   * Load the user's Facebook profile picture and place it in the nav bar.
+   */
+  loadUserPicture: function() {
+    FB.api(
+      '/me',
+      { fields: 'picture' },
+      function(response) {
+        var profPic = $('<img class="user-picture" />')
+          .attr('src', response.picture.data.url);
+        $('#user-info,#facebook-user-info').prepend(profPic);
+      }
+    );
+  },
+
+  /**
+   * Initiate client-side login with Facebook
+   */
+  login: function() {
+    FB.login(function(response) {
+      FB_API.recordAuthResult(response);
+    },
+    {
+      scope: 'email,publish_actions,create_event'
+    });
+  },
+
+  /**
+   * Personalize the page with the user's Facebook profile information.  Uses
+   * Facebook signedRequest functionality to make a call to the server, which
+   * is handled by the omniauth gem in the Ruby backend.
+   *
+   * @param {Object} response The response object from the FB.login() call.
+   */
+  personalize: function(response) {
+    $.getJSON(
+      '/auth/facebook/callback',
+      {
+        signed_request: response.authResponse.signedRequest
+      },
+      function(data) {
+        GPLUS_API.hideButton();
+        FB_API.hideButton();
+        $('#user-name').text(data[1].name);
+        $('#user-info').css('display', 'inline');
+      }
+    );
+  },
+
+  /**
+   * Log out of Facebook, then redirect to the signout URL so that the server's
+   * session state can be cleared.
+   */
+  logout: function() {
+    FB.logout(function(response) {
+      window.location = '/auth/facebook/signout';
+    });
+  },
+
+  /**
+   * Hide the Facebook Login button from the navbar.
+   */
+  hideButton: function() {
+    $('#fb-login-button').css('display', 'none');
+  },
+
+  /**
+   * Show the Facebook login button in the navbar.
+   */
+  showButton: function() {
+    $('#fb-login-button').css('display', 'inline');
+  }
+
+};
+
+/**
+ * When the page loads, register the click callback for the Facebook Login
+ * button and the Logout link.
+ */
+$(document).ready(function() {
+  // Login button behavior
+  $('#fb-login-button').click(function() {
+    FB_API.login();
+  });
+
+  // Logout link behavior
+  $('#logout-link').click(function(e) {
+    // Prevent the link from actually initiating a page load
+    e.preventDefault();
+    FB_API.logout();
+  });
+});
+
+/**
+ * Callback when the Facebook SDK has loaded.  Required by the Facebook
+ * JavaScript SDK.
+ * See https://developers.facebook.com/docs/reference/javascript/
+ */
+window.fbAsyncInit = function() {
+  // Standard Facebook Init Code
+  FB.init({
+    appId: <%= ENV['FB_APP_ID'] %>,
+    status: true,
+    cookie: true,
+    xfbml: true
+  });
+
+  // Additional Facebook Init Code (Custom)
+  FB.getLoginStatus(function(response) {
+    FB_API.recordAuthResult(response);
+  });
+};
