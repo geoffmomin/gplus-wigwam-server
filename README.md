@@ -15,12 +15,12 @@ The WigwamNow project is a companion to the article
 
 ## Setup
 
-### Facebook Develoeprs Dashboard
+### Facebook Developers Dashboard
 1. Follow Facebook's [getting started on web](http://developers.facebook.com/docs/facebook-login/getting-started-web/) to create a new Facebook application.
 2. On the Facebook developers [dashboard](https://developers.facebook.com/apps) create a new app, and record your App ID and App Secret.
-3. Click 'Edit App' and put `localhost` in the 'App Domains' field and `http://localhost` in the 'Site URL' field.  Choose a namespace for your application.
-4. Click 'Open Graph' and then 'Types'.  Create a new object type called `Wigwam` and make it inherit from `Place`.
-5. Under 'Open Graph > Types' add the Action Type `Share` and add a `wigwam` property with type `Wigwam`.  Add the action types `List` and `Rent` and for both of them add a `wigwam` property of type `Wigwam` as well as `start_date` and `end_date` properties of type `DateTime`.
+3. Click **Edit App** and put `localhost` in the **App Domains** field and `http://localhost` in the **Site URL** field.  Choose a namespace for your application.
+4. Click **Open Graph** and then **Types**.  Create a new object type called `Wigwam` and make it inherit from `Place`.
+5. Under **Open Graph > Types** add the Action Type `Share` and add a `wigwam` property with type `Wigwam`.  Add the action types `List` and `Rent` and for both of them add a `wigwam` property of type `Wigwam` as well as `start_date` and `end_date` properties of type `DateTime`.
 
 ### Google APIs Console
 1. Follow the first step of the [Google+ Ruby Quickstart](https://developers.google.com/+/quickstart/ruby#step_1_enable_the_google_api) to create a Google APIs Console project with the Google+ API enabled.  Make sure to add `http://localhost:3000` to your JavaScript origins and to record your Client ID and Client Secret.
